@@ -24,7 +24,7 @@ pub struct TreeNode {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-struct Tree {
+pub struct Tree {
     nodes: Vec<TreeNode>,
     counter: Cell<usize>,
 }
