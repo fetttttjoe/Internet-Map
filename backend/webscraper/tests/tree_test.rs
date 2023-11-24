@@ -1,6 +1,6 @@
-// tree_test.rs
-use super::*;
+// tests/tree_test.rs
 
+use webscraper::tree::{TreeNode, TreeNodeType, build_initial_tree};
 #[test]
 fn test_initial_tree_structure() {
     let initial_tree = build_initial_tree();
@@ -77,13 +77,13 @@ fn test_initial_tree_structure() {
 
     // Perform the comparison
     assert_eq!(
-        compare_tree_structure(&initial_tree.nodes, &expected_structure),
+        compare_tree_structure(&initial_tree.get_nodes(), &expected_structure),
         true
     );
 }
 fn compare_tree_structure(actual: &Vec<TreeNode>, expected: &TreeNode) -> bool {
     // Helper function to recursively compare TreeNodes
-    fn compare_TreeNode(actual: &TreeNode, expected: &TreeNode) -> bool {
+    fn compare_tree_node(actual: &TreeNode, expected: &TreeNode) -> bool {
         actual.id == expected.id
             && actual.name == expected.name
             && compare_children(&actual.children, &expected.children)
@@ -98,7 +98,7 @@ fn compare_tree_structure(actual: &Vec<TreeNode>, expected: &TreeNode) -> bool {
                 }
                 for (actual_child, expected_child) in actual_children.iter().zip(expected_children)
                 {
-                    if !compare_TreeNode(actual_child, expected_child) {
+                    if !compare_tree_node(actual_child, expected_child) {
                         return false;
                     }
                 }
@@ -113,7 +113,7 @@ fn compare_tree_structure(actual: &Vec<TreeNode>, expected: &TreeNode) -> bool {
     actual
         .iter()
         .zip(std::iter::once(expected))
-        .all(|(actual_TreeNode, expected_TreeNode)| {
-            compare_TreeNode(actual_TreeNode, expected_TreeNode)
+        .all(|(actual_tree_node, expected_tree_node)| {
+            compare_tree_node(actual_tree_node, expected_tree_node)
         })
 }
