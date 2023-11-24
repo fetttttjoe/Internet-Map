@@ -5,7 +5,7 @@ use axum::{
 use std::net::SocketAddr;
 use std::sync::{Arc, Mutex};
 use tower_http::cors::{Any, CorsLayer};
-use webscraper::tree::{build_initial_tree, Tree, TreeNode};
+use webscraper::{tree::{build_initial_tree, Tree, TreeNode}, ip_crawler::handle_request};
 
 
 async fn get_tree(state: Extension<Arc<Mutex<Tree>>>) -> Json<Tree> {
@@ -42,7 +42,8 @@ async fn main() {
     tracing_subscriber::fmt::init();
 
     let router = create_router().layer(Extension(arc_tree));
-
+    let response = handle_request("128.65.209.28").await;
+    println!("Response: {:?}", response);
     let addr = SocketAddr::from(([127, 0, 0, 1], 3200));
     println!("Listening on http://{} ", addr);
     tracing::debug!("listening on {} ", addr);
