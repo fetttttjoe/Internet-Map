@@ -121,6 +121,8 @@ impl TreeNode {
   }
 }
 
+// We test against this function if the tree is built correctly
+// DONT CHANGE THE ORDER
 pub fn build_initial_tree() -> Tree {
   let mut initial_tree = Tree::new();
   // Adding root node
