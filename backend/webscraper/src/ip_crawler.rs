@@ -1,6 +1,7 @@
 // src/lib.rs
 use axum::Json;
 use reqwest;
+use rand::seq::SliceRandom;
 use scraper::{Html, Selector};
 use std::net::TcpStream;
 use std::net::Ipv4Addr;
@@ -18,15 +19,17 @@ pub async fn scan_ips(start_ip: &str, end_ip: &str, port: u16) -> Vec<Json<Vec<S
   let start = Ipv4Addr::from_str(start_ip).expect(&format!("Invalid IP address {}", start_ip));
   let end = Ipv4Addr::from_str(end_ip).expect(&format!("Invalid IP address {}", end_ip));
   let mut result = vec![];
+  let mut ips: Vec<Ipv4Addr> = (u32::from(start)..=u32::from(end)).map(|ip| Ipv4Addr::from(ip)).collect();
+ 
+  // Randomize the order of the IPs
+  ips.shuffle(&mut rand::thread_rng());
 
-  for ip in u32::from(start)..=u32::from(end) {
+  for ip in ips {
       let ip_str = Ipv4Addr::from(ip).to_string();
       if is_port_open(&ip_str, port) {
           println!("Port {} is open on IP: {}", port, ip_str);
-          // Introduce a delay between requests
-          tokio::time::sleep(Duration::from_secs(1)).await;
+          tokio::time::sleep(Duration::from_secs(2)).await;
           result.push(handle_request(&ip_str).await);
-          // You can download index.html or perform other actions here
       }
   }
   return result;
@@ -56,6 +59,7 @@ fn find_anchor_tags(html: &str) -> Vec<String> {
   }
   return acor_tags;
 }
+
 fn filter_relative_paths(anchor_tags: Vec<String>) -> Vec<String> {
   println!("Anchor tags: {:?}", anchor_tags);
   let filtered_tags: Vec<_> = anchor_tags.clone()
