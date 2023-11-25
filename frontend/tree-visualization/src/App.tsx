@@ -19,7 +19,7 @@ function App() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get<Tree>('http://localhost:8000/tree');
+        const response = await axios.get<Tree>('http://127.0.0.1:3200/tree');
         setTree(response.data);
       } catch (error) {
         console.error('Error fetching tree data:', error);
