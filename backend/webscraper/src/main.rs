@@ -45,8 +45,9 @@ async fn main() {
 
     let router = create_router().layer(Extension(arc_tree));
     let start_ip = "128.65.209.28";
-    let end_ip = "128.65.209.40";
+    let end_ip = "128.65.209.30";
     let port = 80;
+    
     let response = scan_ips(start_ip, end_ip, port).await;
     for res in response {
         println!("Response: {:?}", res);
