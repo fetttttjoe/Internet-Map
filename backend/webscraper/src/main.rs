@@ -5,8 +5,10 @@ use axum::{
 use std::net::SocketAddr;
 use std::sync::{Arc, Mutex};
 use tower_http::cors::{Any, CorsLayer};
-use webscraper::{tree::{build_initial_tree, Tree, TreeNode}, ip_crawler::handle_request};
-
+use webscraper::{
+    ip_crawler::{handle_request, scan_ips},
+    tree::{build_initial_tree, Tree, TreeNode},
+};
 
 async fn get_tree(state: Extension<Arc<Mutex<Tree>>>) -> Json<Tree> {
     let locked_tree = state.lock().expect("Failed to lock tree for reading");
@@ -42,8 +44,13 @@ async fn main() {
     tracing_subscriber::fmt::init();
 
     let router = create_router().layer(Extension(arc_tree));
-    let response = handle_request("128.65.209.28").await;
-    println!("Response: {:?}", response);
+    let start_ip = "128.65.209.28";
+    let end_ip = "128.65.209.40";
+    let port = 80;
+    let response = scan_ips(start_ip, end_ip, port).await;
+    for res in response {
+        println!("Response: {:?}", res);
+    }
     let addr = SocketAddr::from(([127, 0, 0, 1], 3200));
     println!("Listening on http://{} ", addr);
     tracing::debug!("listening on {} ", addr);

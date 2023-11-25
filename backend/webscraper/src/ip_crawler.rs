@@ -3,12 +3,36 @@ use axum::Json;
 use reqwest;
 use scraper::{Html, Selector};
 use std::net::TcpStream;
+use std::net::Ipv4Addr;
+use std::str::FromStr;
+use std::time::Duration;
 fn is_port_open(ip: &str, port: u16) -> bool {
   match TcpStream::connect((ip, port)) {
     Ok(_) => true,
     Err(_) => false,
   }
 }
+
+
+pub async fn scan_ips(start_ip: &str, end_ip: &str, port: u16) -> Vec<Json<Vec<String>>> {
+  let start = Ipv4Addr::from_str(start_ip).expect(&format!("Invalid IP address {}", start_ip));
+  let end = Ipv4Addr::from_str(end_ip).expect(&format!("Invalid IP address {}", end_ip));
+  let mut result = vec![];
+
+  for ip in u32::from(start)..=u32::from(end) {
+      let ip_str = Ipv4Addr::from(ip).to_string();
+      if is_port_open(&ip_str, port) {
+          println!("Port {} is open on IP: {}", port, ip_str);
+          // Introduce a delay between requests
+          tokio::time::sleep(Duration::from_secs(1)).await;
+          result.push(handle_request(&ip_str).await);
+          // You can download index.html or perform other actions here
+      }
+  }
+  return result;
+}
+
+
 
 async fn download_index_html(ip: &str) -> Result<String, reqwest::Error> {
   let url = format!("http://{}/index.html", ip);
@@ -23,6 +47,7 @@ async fn fetch_website(url: &str) -> Result<String, reqwest::Error> {
 fn find_anchor_tags(html: &str) -> Vec<String> {
   let document = Html::parse_document(html);
   let selector = Selector::parse("a").expect("Failed to parse anchor tag selector");
+  println!("Selector: {:#?}", document.select(&selector));
   let mut acor_tags = Vec::new();
   for element in document.select(&selector) {
     if let Some(href) = element.value().attr("href") {
