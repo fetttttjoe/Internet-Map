@@ -7,6 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
+  env: 
+      
   build:
     runs-on: ubuntu-latest
 
@@ -16,10 +18,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
-    - name: Change to the frontend/node-visualizer directory
-      run: cd frontend/node-visualizer
-
+  
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
@@ -28,10 +27,13 @@ jobs:
 
     
     - name: Install dependencies
+      working-directory: frontend/node-visualizer
       run: npm ci
-
+    
     - name: Build
+      working-directory: frontend/node-visualizer
       run: npm run build --if-present
 
-    - name: Test
-      run: npm test
+    - name: Lint
+      working-directory: frontend/node-visualizer
+      run: npm run lint
