@@ -158,6 +158,7 @@ struct TreesDeserialize {
 }
 // Deserialize function
 pub fn build_tree_from_json(file_content: &str) -> Tree {
+  // Convert JSON to Tree
   let mut tree = Tree::new();
   if let Ok(parsed_json) = serde_json::from_str::<TreesDeserialize>(file_content) {
     println!("Parsed JSON: {:?}", parsed_json);
