@@ -189,7 +189,7 @@ const TreeGraph: React.FC<TreeGraphProps> = () => {
     ctx.fillText(label, x, y)
   }
   return (
-    <>
+    <div className={`rounded bg-[#8EA8C3] shadow-lg`}>
       {tree && tree.nodes.length > 0 && (
         <NoSSRForceGraph2D
           linkDirectionalParticles={6}
@@ -198,7 +198,7 @@ const TreeGraph: React.FC<TreeGraphProps> = () => {
           // nodeCanvasObject={nodeCanvasObject}
         />
       )}
-    </>
+    </div>
   )
 }
 

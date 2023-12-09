@@ -5,6 +5,7 @@ use std::io::Read;
 pub enum TreeNodeType {
   Leaf,
   Branch,
+  Root,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -114,6 +115,15 @@ impl TreeNode {
       id,
       name: name.to_string(),
       node_type: TreeNodeType::Branch,
+      children,
+    };
+  }
+  fn new_root(name: &str, id: usize, children: Option<Vec<TreeNode>>) -> TreeNode {
+    println!("Branch id: {}", id);
+    return TreeNode {
+      id,
+      name: name.to_string(),
+      node_type: TreeNodeType::Root,
       children,
     };
   }

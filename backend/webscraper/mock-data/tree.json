@@ -2,7 +2,7 @@
   "trees": [
     {
       "name": "Root1",
-      "node_type": "Branch",
+      "node_type": "Root",
       "children": [
         {
           "name": "Node1",
@@ -110,7 +110,7 @@
     },
     {
       "name": "Root2",
-      "node_type": "Branch",
+      "node_type": "Root",
       "children": [
         {
           "name": "Node3",
@@ -126,7 +126,7 @@
     },
     {
       "name": "Root3",
-      "node_type": "Branch",
+      "node_type": "Root",
       "children": [
         {
           "name": "Node5",
