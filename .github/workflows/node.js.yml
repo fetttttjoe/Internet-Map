@@ -14,14 +14,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: 18.x
 
     steps:
     - uses: actions/checkout@v3
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}wdwd
+        node-version: ${{ matrix.node-version }}
         working-directory: frontend/node-visualizer
         cache: 'npm'
 
