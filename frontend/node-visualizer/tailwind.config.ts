@@ -8,6 +8,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundColor: {
+        dark: '#2D3748', // Dark mode background color
+      },
+      textColor: {
+        dark: '#E2E8F0', // Dark mode text color
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

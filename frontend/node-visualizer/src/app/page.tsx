@@ -1,13 +1,10 @@
 // pages/index.tsx
-import React from 'react';
-import TreeGraph from './components/TreeGraph';
+import React from 'react'
 
-const Home: React.FC = () => {
-  return (
-    <div>
-      <TreeGraph />
-    </div>
-  );
-};
+import Home from './Home'
 
-export default Home;
+const App: React.FC = () => {
+  return <Home />
+}
+
+export default App
