@@ -11,29 +11,29 @@ jobs:
       
   build:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [18.x]
 
     steps:
+    - working-directory: frontend/node-visualizer
     - uses: actions/checkout@v3
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        working-directory: frontend/node-visualizer
+       
         cache: 'npm'
 
     
     - name: Install dependencies
-      working-directory: frontend/node-visualizer
+
       run: npm ci
     
     - name: Build
-      working-directory: frontend/node-visualizer
+
       run: npm run build --if-present
 
     - name: Lint
-      working-directory: frontend/node-visualizer
+
       run: npm run lint
