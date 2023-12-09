@@ -7,7 +7,7 @@ use std::sync::{Arc, Mutex};
 use tower_http::cors::{Any, CorsLayer};
 use webscraper::{
     ip_crawler::{handle_request, scan_ips},
-    tree::{build_initial_tree, Tree, TreeNode},
+    tree::{build_initial_tree, Tree, TreeNode, build_complex_tree},
 };
 
 async fn get_tree(state: Extension<Arc<Mutex<Tree>>>) -> Json<Tree> {
@@ -39,18 +39,19 @@ fn create_router() -> Router {
 #[tokio::main]
 async fn main() {
     // Create the Tree here and add some leaves and branches
-    let initial_tree = build_initial_tree();
+    let initial_tree = build_complex_tree();
+    println!("Initial tree: {:?}", initial_tree);
     let arc_tree = Arc::new(Mutex::new(initial_tree));
     tracing_subscriber::fmt::init();
 
     let router = create_router().layer(Extension(arc_tree));
-    let start_ip = "128.65.209.28";
-    let end_ip = "128.65.209.40";
-    let port = 80;
-    let response = scan_ips(start_ip, end_ip, port).await;
-    for res in response {
-        println!("Response: {:?}", res);
-    }
+    // let start_ip = "128.65.209.28";
+    // let end_ip = "128.65.209.40";
+    // let port = 80;
+    // let response = scan_ips(start_ip, end_ip, port).await;
+    // for res in response {
+    //     println!("Response: {:?}", res);
+    // }
     let addr = SocketAddr::from(([127, 0, 0, 1], 3200));
     println!("Listening on http://{} ", addr);
     tracing::debug!("listening on {} ", addr);
