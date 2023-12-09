@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
-
+use std::fs::File;
+use std::io::Read;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TreeNodeType {
   Leaf,
@@ -143,4 +144,79 @@ pub fn build_initial_tree() -> Tree {
   // Adding Leaf5
   let _leaf5 = initial_tree.add_node("Leaf5", Some(root_node.id), true, false);
   return initial_tree;
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct TreeNodeDeserialize {
+    pub id: Option<usize>,
+    pub name: String,
+    pub node_type: TreeNodeType,
+    pub children: Option<Vec<TreeNodeDeserialize>>,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct TreesDeserialize {
+    trees: Vec<TreeNodeDeserialize>,
+}
+// Deserialize function
+pub fn build_tree_from_json(file_content: &str) -> Tree {
+  let mut tree = Tree::new();
+  if let Ok(parsed_json) = serde_json::from_str::<TreesDeserialize>(file_content) {
+    println!("Parsed JSON: {:?}", parsed_json);
+    for tree_node in parsed_json.trees {
+        parse_json_value(&tree_node, &mut tree, None);
+    }
+} else {
+    panic!("Failed to parse JSON");
+}
+
+println!("Initial tree: {:?}", tree);
+tree
+}
+
+fn parse_json_value(
+    node: &TreeNodeDeserialize,
+    tree: &mut Tree,
+    parent_id: Option<usize>,
+) {
+    let new_id = match node.id {
+        Some(id) => id,
+        None => tree.get_id(),
+    };
+
+    let new_node = TreeNode {
+        id: new_id,
+        name: node.name.clone(),
+        node_type: node.node_type.clone(),
+        children: None,
+    };
+
+    match parent_id {
+        Some(parent_id) => {
+            if let Some(parent) = tree.find_node_by_id(parent_id) {
+                parent.add_child(new_node.clone());
+            }
+        }
+        None => {
+            tree.nodes.push(new_node.clone());
+        }
+    }
+
+    if let Some(children) = &node.children {
+        for child in children {
+            parse_json_value(child, tree, Some(new_id));
+        }
+    }
+}
+
+pub fn build_complex_tree() -> Tree {
+  // Read the content of the 'tree.json' file
+  let mut file_content = String::new();
+  let file_result = File::open("mock-data/tree.json");
+  println!("File result: {:?}", file_result);
+  if let Ok(mut file) = file_result {
+      file.read_to_string(&mut file_content).ok();
+  } else {
+      panic!("Failed to open 'mock-data/tree.json' file");
+  }
+  // Convert JSON to Tree
+  return build_tree_from_json(&file_content);
 }
