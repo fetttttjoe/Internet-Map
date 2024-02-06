@@ -1,12 +1,17 @@
 // components/Graph2d.tsx
-import React, { MutableRefObject, useCallback, useEffect, useRef } from 'react';
-import ForceGraph3D, { ForceGraphMethods, LinkObject, NodeObject } from 'react-force-graph-2d';
+import React, { useCallback, useRef } from "react";
+import ForceGraph3D, { NodeObject } from "react-force-graph-2d";
+// Throttled values
+import { useResizeDetector } from 'react-resize-detector';
 interface Graph2dProps {
   graphData: { nodes: GraphNode[]; links: GraphLink[] };
-  nodeCanvasObject: (node: NodeObject<NodeObject<GraphNode>>, ctx: CanvasRenderingContext2D, globalScale: number) => void;
+  nodeCanvasObject: (
+    node: NodeObject<NodeObject<GraphNode>>,
+    ctx: CanvasRenderingContext2D,
+    globalScale: number
+  ) => void;
   nodeAutoColorBy: string;
   linkDirectionalParticles: number;
-  
 }
 
 export interface GraphNode {
@@ -20,18 +25,32 @@ export interface GraphLink {
   target: number;
 }
 
-
-const Graph2d: React.FC<Graph2dProps> = ({ graphData, nodeAutoColorBy, nodeCanvasObject, linkDirectionalParticles }) => {
- /**
- *  Make Responsive
- */
+const Graph2d: React.FC<Graph2dProps> = ({
+  graphData,
+  nodeAutoColorBy,
+  nodeCanvasObject,
+  linkDirectionalParticles,
+}) => {
+  const { width, height, ref } = useResizeDetector({
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 200,
+  });
   return (
-    <ForceGraph3D
-    nodeAutoColorBy={nodeAutoColorBy}
-    nodeCanvasObject={nodeCanvasObject}
-    linkDirectionalParticles={linkDirectionalParticles}
-    graphData={graphData}
-    />
+    <div
+    ref={ref}
+    className="h-full w-full bg-charcoal p-4 rounded-lg shadow-lg"
+    >
+      <ForceGraph3D
+        width={width}
+        height={height}
+        nodeAutoColorBy={nodeAutoColorBy}
+        nodeCanvasObject={nodeCanvasObject}
+        linkDirectionalParticles={linkDirectionalParticles}
+        graphData={graphData}
+      />
+     
+    </div>
   );
 };
 

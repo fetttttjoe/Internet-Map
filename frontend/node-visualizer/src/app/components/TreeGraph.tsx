@@ -165,17 +165,15 @@ const TreeGraph: React.FC<TreeGraphProps> = () => {
     ctx.fillText(label, x, y);
   };
   return (
-    <div className="bg-gray-800 text-white p-8">
-      <h1 className="text-3xl font-bold mb-4">Tree Structure</h1>
+    <div className="bg-blue  p-8">
+      <h1 className="text-3xl text-white font-bold mb-4">Tree Structure</h1>
       {tree && tree.nodes.length > 0 && (
-        <div ref={graphContainerRef} className="h-full w-full bg-gray-900 p-4 rounded-lg shadow-lg">
           <NoSSRForceGraph2D
             linkDirectionalParticles={6}
             nodeAutoColorBy="node_type"
             graphData={flattenTree(tree)}
             nodeCanvasObject={nodeCanvasObject}
           />
-        </div>
       )}
     </div>
   );
